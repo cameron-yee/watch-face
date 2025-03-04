@@ -15,9 +15,9 @@ class watch_faceView extends WatchUi.WatchFace {
     var TEMP_LABEL = "TempLabel";
     var HR_LABEL = "HRLabel";
     var TIME_LABEL = "TimeLabel";
-    var SUNSET_LABEL = "SunsetLabel";
+    var SUNSET_OR_SUNRISE_LABEL = "SunsetOrSunriseLabel";
 
-    var sunsetString = DEFAULT_STRING;
+    var sunsetOrSunriseString = DEFAULT_STRING;
     var hrString = DEFAULT_STRING;
     var tempString = DEFAULT_STRING;
     var timeString = DEFAULT_STRING;
@@ -87,22 +87,41 @@ class watch_faceView extends WatchUi.WatchFace {
         );
     }
 
-    function setSunsetString() as Void {
+    function getNextSunriseOrSunset(currentLocation as Position.Location) as Time.Moment or Null {
+        var now = Time.now();
+        var oneDay = new Time.Duration(Gregorian.SECONDS_PER_DAY);
+        var tomorrow = now.add(oneDay);
+
+        var todaysSunrise = Weather.getSunrise(currentLocation, now);
+        var tomorrowsSunrise = Weather.getSunrise(currentLocation, tomorrow);
+        var todaysSunset = Weather.getSunset(currentLocation, now);
+
+        var pastSunrise = todaysSunset.compare(todaysSunrise) > 0;
+        var pastSunset = now.compare(todaysSunset) > 0;
+
+        return pastSunrise && pastSunset
+          ? tomorrowsSunrise
+          : pastSunrise
+            ? todaysSunset
+            : todaysSunrise;
+    }
+
+    function setSunsetOrSunriseString() as Void {
         try {
             var currentLocation = getCurrentLocation();
 
             if (currentLocation != null) {
-                var sunsetMoment = Weather.getSunset(currentLocation, Time.now());
+                var nextSunriseOrSunset = getNextSunriseOrSunset(currentLocation);
 
-                if (sunsetMoment != null) {
-                    var timeInfo = Time.Gregorian.info(sunsetMoment, Time.FORMAT_LONG);
-                    sunsetString = formatHoursAndMinutes(timeInfo.hour, timeInfo.min);
+                if (nextSunriseOrSunset != null) {
+                    var timeInfo = Time.Gregorian.info(nextSunriseOrSunset, Time.FORMAT_LONG);
+                    sunsetOrSunriseString = formatHoursAndMinutes(timeInfo.hour, timeInfo.min);
 
                     Application.Storage.setValue("coordinates", currentLocation.toDegrees());
                 }
             }
         } catch (ex) {
-            sunsetString = EXCEPTION_STRING;
+            sunsetOrSunriseString = EXCEPTION_STRING;
         }
     }
 
@@ -185,12 +204,12 @@ class watch_faceView extends WatchUi.WatchFace {
         hrView.setColor(getHRColor(hr));
     }
 
-    function updateSunsetView(locX as Lang.Number, locY as Lang.Number) as Void {
-        setSunsetString();
+    function updateSunsetOrSunriseView(locX as Lang.Number, locY as Lang.Number) as Void {
+        setSunsetOrSunriseString();
 
-        var sunsetView = View.findDrawableById(SUNSET_LABEL) as Text;
-        sunsetView.setText(sunsetString);
-        sunsetView.setLocation(locX, locY);
+        var sunsetOrSunriseView = View.findDrawableById(SUNSET_OR_SUNRISE_LABEL) as Text;
+        sunsetOrSunriseView.setText(sunsetOrSunriseString);
+        sunsetOrSunriseView.setLocation(locX, locY);
     }
 
     function onUpdate(dc as Dc) as Void {
@@ -207,7 +226,7 @@ class watch_faceView extends WatchUi.WatchFace {
             updateTempView(midX + quarterX, environmentValuesY);
             updateTimeView(WatchUi.LAYOUT_VALIGN_CENTER, WatchUi.LAYOUT_VALIGN_CENTER);
             updateHRView(WatchUi.LAYOUT_VALIGN_CENTER, WatchUi.LAYOUT_VALIGN_TOP);
-            updateSunsetView(midX - quarterX, environmentValuesY);
+            updateSunsetOrSunriseView(midX - quarterX, environmentValuesY);
         } catch (ex) {}
 
         // Call the parent onUpdate function to redraw the layout
