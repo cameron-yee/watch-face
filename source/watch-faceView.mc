@@ -204,6 +204,18 @@ class watch_faceView extends WatchUi.WatchFace {
         }
     }
 
+    function getNextSunEventColor() as Graphics.ColorType {
+        var currentLocation = getCurrentLocation();
+        if (currentLocation != null) {
+            var nextSunEventIsSunrise = isSunrise(currentLocation);
+            if (nextSunEventIsSunrise) {
+                return Graphics.COLOR_PURPLE;
+            }
+        }
+
+        return Graphics.COLOR_PINK;
+    }
+
     function getHRColor(hr as Lang.Number or Null) as Graphics.ColorType {
         if (hr == null) {
             return Graphics.COLOR_DK_GRAY;
@@ -262,18 +274,6 @@ class watch_faceView extends WatchUi.WatchFace {
         hrView.setText(hrString);
         hrView.setLocation(locX, locY);
         hrView.setColor(getHRColor(hr));
-    }
-
-    function getNextSunEventColor() as Graphics.ColorType {
-        var currentLocation = getCurrentLocation();
-        if (currentLocation != null) {
-            var nextSunEventIsSunrise = isSunrise(currentLocation);
-            if (nextSunEventIsSunrise) {
-                return Graphics.COLOR_PURPLE;
-            }
-        }
-
-        return Graphics.COLOR_PINK;
     }
 
     function updateSunsetOrSunriseView(locX as Lang.Number, locY as Lang.Number) as Void {
