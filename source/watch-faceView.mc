@@ -179,18 +179,25 @@ class watch_faceView extends WatchUi.WatchFace {
         return celcius * 9/5 + 32;
     }
 
-    function setTempString() as Void {
-        try {
-            var currentConditions = Weather.getCurrentConditions();
-            if (currentConditions != null) {
-                var currentTempC = currentConditions.temperature;
-                if (currentTempC != null) {
-                    var currentTempF = convertCelciusToFarenheit(currentTempC);
-                    var currentTempString = formatAsZeroPaddedNumber(currentTempF);
+    function getCurrentTempF() as Lang.Number or Null {
+        var currentConditions = Weather.getCurrentConditions();
+        if (currentConditions != null) {
+            var currentTempC = currentConditions.temperature;
+            if (currentTempC != null) {
+                return convertCelciusToFarenheit(currentTempC);
+            }
+        }
 
-                    // adding leading spaces to adjust spacing
-                    tempString = "  " + currentTempString + "°";
-                }
+        return null;
+	}
+
+    function setTempString(currentTempF as Lang.Number or Null) as Void {
+        try {
+            if (currentTempF != null) {
+                var currentTempString = formatAsZeroPaddedNumber(currentTempF);
+
+                // adding leading spaces to adjust spacing
+                tempString = "  " + currentTempString + "°";
             }
         } catch (ex) {
             tempString = EXCEPTION_STRING;
@@ -209,12 +216,34 @@ class watch_faceView extends WatchUi.WatchFace {
         }
     }
 
+    function getTempColor(tempF as Lang.Number or Null) as Graphics.ColorType {
+        if (tempF == null) {
+            return Graphics.COLOR_DK_GRAY;
+        } else if (tempF < 10) {
+            return Graphics.COLOR_WHITE;
+        } else if (tempF < 32) {
+            return Graphics.COLOR_BLUE;
+        } else if (tempF < 50) {
+            return Graphics.COLOR_GREEN;
+        } else if (tempF < 70) {
+            return Graphics.COLOR_YELLOW;
+        } else if (tempF < 80) {
+            return Graphics.COLOR_ORANGE;
+        } else if (tempF < 90) {
+            return Graphics.COLOR_RED;
+        } else {
+            return Graphics.COLOR_DK_RED;
+        }
+    }
+
     function updateTempView(locX as Lang.Number, locY as Lang.Number) as Void {
-        setTempString();
+        var currentTempF = getCurrentTempF();
+        setTempString(currentTempF);
 
         var tempView = View.findDrawableById(TEMP_LABEL) as Text;
         tempView.setText(tempString);
         tempView.setLocation(locX, locY);
+        tempView.setColor(getTempColor(currentTempF));
     }
 
     function updateTimeView(locX as Lang.Number, locY as Lang.Number) as Void {
