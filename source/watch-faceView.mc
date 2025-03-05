@@ -87,23 +87,54 @@ class watch_faceView extends WatchUi.WatchFace {
         );
     }
 
-    function getNextSunriseOrSunset(currentLocation as Position.Location) as Time.Moment or Null {
+    function getSunEvents(currentLocation as Position.Location) as Array<Time.Moment or Null> {
         var now = Time.now();
         var oneDay = new Time.Duration(Gregorian.SECONDS_PER_DAY);
         var tomorrow = now.add(oneDay);
 
         var todaysSunrise = Weather.getSunrise(currentLocation, now);
-        var tomorrowsSunrise = Weather.getSunrise(currentLocation, tomorrow);
         var todaysSunset = Weather.getSunset(currentLocation, now);
+        var tomorrowsSunrise = Weather.getSunrise(currentLocation, tomorrow);
 
-        var pastSunrise = todaysSunset.compare(todaysSunrise) > 0;
-        var pastSunset = now.compare(todaysSunset) > 0;
+        return [todaysSunrise, todaysSunset, tomorrowsSunrise];
+    }
+
+    function isPastTodaysSunrise(currentLocation as Position.Location) as Lang.Boolean {
+        var sunEvents = getSunEvents(currentLocation);
+
+        var todaysSunrise = sunEvents[0];
+        var todaysSunset = sunEvents[1];
+
+        return todaysSunset.compare(todaysSunrise) > 0;
+    }
+
+    function isPastTodaysSunset(currentLocation as Position.Location) as Lang.Boolean {
+        var sunEvents = getSunEvents(currentLocation);
+        var todaysSunset = sunEvents[1];
+        var now = Time.now();
+
+        return now.compare(todaysSunset) > 0;
+    }
+
+    function isSunrise(currentLocation as Position.Location) as Lang.Boolean {
+        var pastSunrise = isPastTodaysSunrise(currentLocation as Position.Location);
+        var pastSunset = isPastTodaysSunset(currentLocation as Position.Location);
+
+        return (pastSunrise && pastSunset) || !pastSunrise
+          ? true
+          : false;
+    }
+
+    function getNextSunriseOrSunset(currentLocation as Position.Location) as Time.Moment or Null {
+        var sunEvents = getSunEvents(currentLocation);
+        var pastSunrise = isPastTodaysSunrise(currentLocation);
+        var pastSunset = isPastTodaysSunset(currentLocation);
 
         return pastSunrise && pastSunset
-          ? tomorrowsSunrise
+          ? sunEvents[2]
           : pastSunrise
-            ? todaysSunset
-            : todaysSunrise;
+            ? sunEvents[1]
+            : sunEvents[0];
     }
 
     function setSunsetOrSunriseString() as Void {
@@ -204,11 +235,25 @@ class watch_faceView extends WatchUi.WatchFace {
         hrView.setColor(getHRColor(hr));
     }
 
+    function getNextSunEventColor() as Graphics.ColorType {
+        var currentLocation = getCurrentLocation();
+        if (currentLocation != null) {
+            var nextSunEventIsSunrise = isSunrise(currentLocation);
+            if (nextSunEventIsSunrise) {
+                return Graphics.COLOR_PURPLE;
+            }
+        }
+
+        return Graphics.COLOR_PINK;
+    }
+
     function updateSunsetOrSunriseView(locX as Lang.Number, locY as Lang.Number) as Void {
         setSunsetOrSunriseString();
 
         var sunsetOrSunriseView = View.findDrawableById(SUNSET_OR_SUNRISE_LABEL) as Text;
+
         sunsetOrSunriseView.setText(sunsetOrSunriseString);
+        sunsetOrSunriseView.setColor(getNextSunEventColor());
         sunsetOrSunriseView.setLocation(locX, locY);
     }
 
