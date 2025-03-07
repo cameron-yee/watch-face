@@ -206,58 +206,46 @@ class watch_faceView extends WatchUi.WatchFace {
     }
 
     function getCircleCoordinates(radians as Lang.Number or Lang.Float or Lang.Double, radius as Lang.Number, circleCenterX as Lang.Number, circleCenterY as Lang.Number) as Array<Lang.Number or Lang.Float or Lang.Double> {
-        var x = radius * Math.cos(radians);
-        var y = radius * Math.sin(radians);
+        var x = circleCenterX + radius * Math.cos(radians);
+        var y = circleCenterY + radius * Math.sin(radians);
 
-        var inverseX = -x;
-        var inverseY = -y;
+        return [x, y];
+    }
 
-        return [x + circleCenterX, y + circleCenterY, inverseX + circleCenterX, inverseY + circleCenterY];
+    function getBeamAngles(numberOfBeams as Lang.Number) as Lang.Array<Lang.Float or Lang.Number> {
+        var beamAngles = [] as Lang.Array<Lang.Float or Lang.Number>;
+        for (var i = 0; i < 2 * Math.PI; i += Math.PI / (numberOfBeams / 2)) {
+            beamAngles.add(i);
+        }
+
+        return beamAngles;
     }
 
     function drawSun(dc as Dc, midX as Lang.Number, midY as Lang.Number) as Void {
-        var eighthAngle = Math.PI / 4;
-        var quarterAngle = Math.PI / 2;
-
         var sunRadius = 8;
         var outerRadius = 18;
-        var offset = 3;
+        var beamOffset = 3;
+        var numberOfBeams = 16;
 
         dc.setClip(midX - outerRadius, midY - outerRadius, outerRadius * 2 + 1, outerRadius * 2 + 1);
 
         dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
         dc.drawCircle(midX, midY, sunRadius);
 
-        var angles = [0, eighthAngle, quarterAngle, quarterAngle + eighthAngle];
+        var beamAngles = getBeamAngles(numberOfBeams);
 
-        for (var i = 0; i < angles.size(); i++) {
-            var sunCoordinates = getCircleCoordinates(angles[i], sunRadius, midX, midY);
-            var outerCoordinates = getCircleCoordinates(angles[i], outerRadius, midX, midY);
+        for (var i = 0; i < beamAngles.size(); i++) {
+            var innerCoordinates = getCircleCoordinates(beamAngles[i], sunRadius + beamOffset, midX, midY);
+            var outerCoordinates = getCircleCoordinates(beamAngles[i], outerRadius, midX, midY);
 
-            var sunX = sunCoordinates[0];
-            var sunY = sunCoordinates[1] ;
-            var inverseSunX = sunCoordinates[2];
-            var inverseSunY = sunCoordinates[3];
+            var innerX = innerCoordinates[0];
+            var innerY = innerCoordinates[1];
 
             var outerX = outerCoordinates[0];
             var outerY = outerCoordinates[1];
-            var inverseOuterX = outerCoordinates[2];
-            var inverseOuterY = outerCoordinates[3];
 
             dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
-            if (sunX > midX && sunY == midY) {
-                dc.drawLine(sunX + offset, sunY, outerX, outerY);
-                dc.drawLine(inverseSunX - offset, inverseSunY, inverseOuterX, inverseOuterY);
-            } else if (sunX > midX) {
-                dc.drawLine(sunX + offset, sunY + offset, outerX, outerY);
-                dc.drawLine(inverseSunX - offset, inverseSunY - offset, inverseOuterX, inverseOuterY);
-            } else if (sunX == midX) {
-                dc.drawLine(sunX, sunY + offset, outerX, outerY);
-                dc.drawLine(inverseSunX, inverseSunY - offset, inverseOuterX, inverseOuterY);
-            } else if (sunX < midX) {
-                dc.drawLine(sunX - offset, sunY + offset, outerX, outerY);
-                dc.drawLine(inverseSunX + offset, inverseSunY - offset, inverseOuterX, inverseOuterY);
-            }
+            dc.drawLine(innerX, innerY, outerX, outerY);
         }
 
         dc.clearClip();
