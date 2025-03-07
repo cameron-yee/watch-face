@@ -204,6 +204,7 @@ class watch_faceView extends WatchUi.WatchFace {
             tempString = EXCEPTION_STRING;
         }
     }
+
     function getCircleCoordinates(radians as Lang.Number or Lang.Float or Lang.Double, radius as Lang.Number, circleCenterX as Lang.Number, circleCenterY as Lang.Number) as Array<Lang.Number or Lang.Float or Lang.Double> {
         var x = radius * Math.cos(radians);
         var y = radius * Math.sin(radians);
