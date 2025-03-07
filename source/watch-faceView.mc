@@ -1,6 +1,7 @@
 import Toybox.Activity;
 import Toybox.Graphics;
 import Toybox.Lang;
+import Toybox.Math;
 import Toybox.System;
 import Toybox.Time;
 import Toybox.WatchUi;
@@ -189,7 +190,7 @@ class watch_faceView extends WatchUi.WatchFace {
         }
 
         return null;
-	}
+    }
 
     function setTempString(currentTempF as Lang.Number or Null) as Void {
         try {
@@ -286,6 +287,72 @@ class watch_faceView extends WatchUi.WatchFace {
         sunsetOrSunriseView.setLocation(locX, locY);
     }
 
+    function updateWeatherIcon(dc as Dc, midX as Lang.Number, midY as Lang.Number, radius as Lang.Number) as Void {
+        var currentConditions = Weather.getCurrentConditions();
+
+        if (currentConditions != null && currentConditions.condition != null) {
+            var condition = currentConditions.condition;
+            var sunnyConditions = [0, 1, 22, 23, 40];
+            if (sunnyConditions.indexOf(condition) != null) {
+        		drawSun(dc, midX, midY, 8);
+        		return;
+            }
+        }
+    }
+
+    function getCircleCoordinates(radians as Lang.Number or Lang.Float or Lang.Double, radius as Lang.Number, circleCenterX as Lang.Number, circleCenterY as Lang.Number) as Array<Lang.Number or Lang.Float or Lang.Double> {
+        var x = radius * Math.cos(radians);
+        var y = radius * Math.sin(radians);
+
+        var inverseX = -x;
+        var inverseY = -y;
+
+        return [x + circleCenterX, y + circleCenterY, inverseX + circleCenterX, inverseY + circleCenterY];
+    }
+
+    function drawSun(dc as Dc, midX as Lang.Number, midY as Lang.Number, radius as Lang.Number) as Void {
+        var eighthAngle = Math.PI / 4;
+        var quarterAngle = Math.PI / 2;
+
+        var offset = 3;
+        var lineLength = 3;
+
+        dc.setClip(midX - radius - offset - lineLength, midY - radius - offset - lineLength, (radius + offset + lineLength) * 2 + 1, (radius + offset + lineLength) * 2 + 1);
+
+        dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
+        dc.drawCircle(midX, midY, radius);
+
+        var angles = [0, eighthAngle, quarterAngle, quarterAngle + eighthAngle];
+
+        for (var i = 0; i < angles.size(); i++) {
+            var coordinates = getCircleCoordinates(angles[i], radius, midX, midY);
+            var x = coordinates[0];
+            var y = coordinates[1];
+            var inverseX = coordinates[2];
+            var inverseY = coordinates[3];
+
+            if (x > midX && y == midY) {
+                dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
+                dc.drawLine(x + offset + lineLength, y, x + offset, y);
+                dc.drawLine(inverseX - offset - lineLength, inverseY, inverseX - offset, inverseY);
+            } else if (x > midX) {
+                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
+                dc.drawLine(x + offset + lineLength, y + offset + lineLength, x + offset, y + offset);
+                dc.drawLine(inverseX - offset - lineLength, inverseY - offset - lineLength, inverseX - offset, inverseY - offset);
+            } else if (x == midX) {
+                dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
+                dc.drawLine(x, y + offset + lineLength, x, y + offset);
+                dc.drawLine(inverseX, inverseY - offset - lineLength, inverseX, inverseY - offset);
+            } else if (x < midX) {
+                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
+                dc.drawLine(x - offset - lineLength, y + offset + lineLength, x - offset, y + offset);
+                dc.drawLine(inverseX + offset + lineLength, inverseY - offset - lineLength, inverseX + offset, inverseY - offset);
+            }
+        }
+
+        dc.clearClip();
+    }
+
     function onUpdate(dc as Dc) as Void {
         var screenWidth = dc.getWidth();
         var screenHeight = dc.getHeight();
@@ -305,6 +372,9 @@ class watch_faceView extends WatchUi.WatchFace {
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
+
+        // Draw custom drawables after calling View.onUpdate(dc);
+        updateWeatherIcon(dc, midX, environmentValuesY + 60, 8);
     }
 
     // Called when this View is removed from the screen. Save the
