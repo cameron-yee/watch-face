@@ -220,11 +220,11 @@ class watch_faceView extends WatchUi.WatchFace {
         var quarterAngle = Math.PI / 2;
 
         var offset = 3;
-        var lineLength = 3;
+        var lineLength = 5;
 
         dc.setClip(midX - radius - offset - lineLength, midY - radius - offset - lineLength, (radius + offset + lineLength) * 2 + 1, (radius + offset + lineLength) * 2 + 1);
 
-        dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
         dc.drawCircle(midX, midY, radius);
 
         var angles = [0, eighthAngle, quarterAngle, quarterAngle + eighthAngle];
@@ -236,20 +236,17 @@ class watch_faceView extends WatchUi.WatchFace {
             var inverseX = coordinates[2];
             var inverseY = coordinates[3];
 
+            dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
             if (x > midX && y == midY) {
-                dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
                 dc.drawLine(x + offset + lineLength, y, x + offset, y);
                 dc.drawLine(inverseX - offset - lineLength, inverseY, inverseX - offset, inverseY);
             } else if (x > midX) {
-                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
                 dc.drawLine(x + offset + lineLength, y + offset + lineLength, x + offset, y + offset);
                 dc.drawLine(inverseX - offset - lineLength, inverseY - offset - lineLength, inverseX - offset, inverseY - offset);
             } else if (x == midX) {
-                dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
                 dc.drawLine(x, y + offset + lineLength, x, y + offset);
                 dc.drawLine(inverseX, inverseY - offset - lineLength, inverseX, inverseY - offset);
             } else if (x < midX) {
-                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
                 dc.drawLine(x - offset - lineLength, y + offset + lineLength, x - offset, y + offset);
                 dc.drawLine(inverseX + offset + lineLength, inverseY - offset - lineLength, inverseX + offset, inverseY - offset);
             }
