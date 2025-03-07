@@ -204,6 +204,71 @@ class watch_faceView extends WatchUi.WatchFace {
             tempString = EXCEPTION_STRING;
         }
     }
+    function getCircleCoordinates(radians as Lang.Number or Lang.Float or Lang.Double, radius as Lang.Number, circleCenterX as Lang.Number, circleCenterY as Lang.Number) as Array<Lang.Number or Lang.Float or Lang.Double> {
+        var x = radius * Math.cos(radians);
+        var y = radius * Math.sin(radians);
+
+        var inverseX = -x;
+        var inverseY = -y;
+
+        return [x + circleCenterX, y + circleCenterY, inverseX + circleCenterX, inverseY + circleCenterY];
+    }
+
+    function drawSun(dc as Dc, midX as Lang.Number, midY as Lang.Number, radius as Lang.Number) as Void {
+        var eighthAngle = Math.PI / 4;
+        var quarterAngle = Math.PI / 2;
+
+        var offset = 3;
+        var lineLength = 3;
+
+        dc.setClip(midX - radius - offset - lineLength, midY - radius - offset - lineLength, (radius + offset + lineLength) * 2 + 1, (radius + offset + lineLength) * 2 + 1);
+
+        dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
+        dc.drawCircle(midX, midY, radius);
+
+        var angles = [0, eighthAngle, quarterAngle, quarterAngle + eighthAngle];
+
+        for (var i = 0; i < angles.size(); i++) {
+            var coordinates = getCircleCoordinates(angles[i], radius, midX, midY);
+            var x = coordinates[0];
+            var y = coordinates[1];
+            var inverseX = coordinates[2];
+            var inverseY = coordinates[3];
+
+            if (x > midX && y == midY) {
+                dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
+                dc.drawLine(x + offset + lineLength, y, x + offset, y);
+                dc.drawLine(inverseX - offset - lineLength, inverseY, inverseX - offset, inverseY);
+            } else if (x > midX) {
+                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
+                dc.drawLine(x + offset + lineLength, y + offset + lineLength, x + offset, y + offset);
+                dc.drawLine(inverseX - offset - lineLength, inverseY - offset - lineLength, inverseX - offset, inverseY - offset);
+            } else if (x == midX) {
+                dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
+                dc.drawLine(x, y + offset + lineLength, x, y + offset);
+                dc.drawLine(inverseX, inverseY - offset - lineLength, inverseX, inverseY - offset);
+            } else if (x < midX) {
+                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
+                dc.drawLine(x - offset - lineLength, y + offset + lineLength, x - offset, y + offset);
+                dc.drawLine(inverseX + offset + lineLength, inverseY - offset - lineLength, inverseX + offset, inverseY - offset);
+            }
+        }
+
+        dc.clearClip();
+    }
+
+    function drawRainDrop(dc as Dc, midX as Lang.Number, midY as Lang.Number, radius as Lang.Number) as Void {
+        var rainDropLength = 15;
+
+        dc.setClip(midX - radius, midY, (radius * 2) + 1, rainDropLength + 7);
+        dc.setColor(Graphics.COLOR_BLUE, Graphics.COLOR_TRANSPARENT);
+
+        dc.drawLine(midX, midY, midX - radius, midY + rainDropLength);
+        dc.drawLine(midX, midY, midX + radius, midY + rainDropLength);
+        dc.drawArc(midX, midY + rainDropLength, radius, Graphics.ARC_COUNTER_CLOCKWISE, 180, 0);
+
+        dc.clearClip();
+    }
 
     function getNextSunEventColor() as Graphics.ColorType {
         var currentLocation = getCurrentLocation();
@@ -287,70 +352,25 @@ class watch_faceView extends WatchUi.WatchFace {
         sunsetOrSunriseView.setLocation(locX, locY);
     }
 
-    function updateWeatherIcon(dc as Dc, midX as Lang.Number, midY as Lang.Number, radius as Lang.Number) as Void {
+    function updateWeatherIcon(dc as Dc, midX as Lang.Number, midY as Lang.Number) as Void {
         var currentConditions = Weather.getCurrentConditions();
 
         if (currentConditions != null && currentConditions.condition != null) {
             var condition = currentConditions.condition;
+
             var sunnyConditions = [0, 1, 22, 23, 40];
-            if (sunnyConditions.indexOf(condition) != null) {
-        		drawSun(dc, midX, midY, 8);
-        		return;
+            var rainyConditions = [3, 6, 11, 12, 13, 14, 15, 24, 25, 26, 31, 41, 42, 49];
+
+            System.println(sunnyConditions.indexOf(condition));
+            if (sunnyConditions.indexOf(condition) != -1) {
+                drawSun(dc, midX, midY, 8);
+            } else if (rainyConditions.indexOf(condition) != -1) {
+                drawRainDrop(dc, midX, midY, 5);
+            } else {
+                dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+                dc.drawText(midX - 5, midY - 5, Graphics.FONT_SMALL, condition.format("%d"), Graphics.TEXT_JUSTIFY_CENTER);
             }
         }
-    }
-
-    function getCircleCoordinates(radians as Lang.Number or Lang.Float or Lang.Double, radius as Lang.Number, circleCenterX as Lang.Number, circleCenterY as Lang.Number) as Array<Lang.Number or Lang.Float or Lang.Double> {
-        var x = radius * Math.cos(radians);
-        var y = radius * Math.sin(radians);
-
-        var inverseX = -x;
-        var inverseY = -y;
-
-        return [x + circleCenterX, y + circleCenterY, inverseX + circleCenterX, inverseY + circleCenterY];
-    }
-
-    function drawSun(dc as Dc, midX as Lang.Number, midY as Lang.Number, radius as Lang.Number) as Void {
-        var eighthAngle = Math.PI / 4;
-        var quarterAngle = Math.PI / 2;
-
-        var offset = 3;
-        var lineLength = 3;
-
-        dc.setClip(midX - radius - offset - lineLength, midY - radius - offset - lineLength, (radius + offset + lineLength) * 2 + 1, (radius + offset + lineLength) * 2 + 1);
-
-        dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
-        dc.drawCircle(midX, midY, radius);
-
-        var angles = [0, eighthAngle, quarterAngle, quarterAngle + eighthAngle];
-
-        for (var i = 0; i < angles.size(); i++) {
-            var coordinates = getCircleCoordinates(angles[i], radius, midX, midY);
-            var x = coordinates[0];
-            var y = coordinates[1];
-            var inverseX = coordinates[2];
-            var inverseY = coordinates[3];
-
-            if (x > midX && y == midY) {
-                dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
-                dc.drawLine(x + offset + lineLength, y, x + offset, y);
-                dc.drawLine(inverseX - offset - lineLength, inverseY, inverseX - offset, inverseY);
-            } else if (x > midX) {
-                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
-                dc.drawLine(x + offset + lineLength, y + offset + lineLength, x + offset, y + offset);
-                dc.drawLine(inverseX - offset - lineLength, inverseY - offset - lineLength, inverseX - offset, inverseY - offset);
-            } else if (x == midX) {
-                dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
-                dc.drawLine(x, y + offset + lineLength, x, y + offset);
-                dc.drawLine(inverseX, inverseY - offset - lineLength, inverseX, inverseY - offset);
-            } else if (x < midX) {
-                dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
-                dc.drawLine(x - offset - lineLength, y + offset + lineLength, x - offset, y + offset);
-                dc.drawLine(inverseX + offset + lineLength, inverseY - offset - lineLength, inverseX + offset, inverseY - offset);
-            }
-        }
-
-        dc.clearClip();
     }
 
     function onUpdate(dc as Dc) as Void {
@@ -374,7 +394,7 @@ class watch_faceView extends WatchUi.WatchFace {
         View.onUpdate(dc);
 
         // Draw custom drawables after calling View.onUpdate(dc);
-        updateWeatherIcon(dc, midX, environmentValuesY + 60, 8);
+        updateWeatherIcon(dc, midX, environmentValuesY + 60);
     }
 
     // Called when this View is removed from the screen. Save the
