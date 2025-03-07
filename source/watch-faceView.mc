@@ -359,7 +359,6 @@ class watch_faceView extends WatchUi.WatchFace {
             var sunnyConditions = [0, 1, 22, 23, 40];
             var rainyConditions = [3, 6, 11, 12, 13, 14, 15, 24, 25, 26, 31, 41, 42, 49];
 
-            System.println(sunnyConditions.indexOf(condition));
             if (sunnyConditions.indexOf(condition) != -1) {
                 drawSun(dc, midX, midY, 8);
             } else if (rainyConditions.indexOf(condition) != -1) {
