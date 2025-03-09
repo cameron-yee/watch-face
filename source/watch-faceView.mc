@@ -265,6 +265,29 @@ class watch_faceView extends WatchUi.WatchFace {
         dc.clearClip();
     }
 
+    function drawWind(dc as Dc, midX as Lang.Number, midY as Lang.Number) as Void {
+        var windLineLength = 15;
+        var windLineGap = 5;
+        var arcRadius = 4;
+
+        var lineStartX = midX - windLineLength;
+        var offsetLineStartX = midX - windLineLength / 3;
+
+        dc.setClip(lineStartX, midY - windLineGap - arcRadius*2, offsetLineStartX + windLineLength + arcRadius, midY + windLineGap + arcRadius*2);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+
+        dc.drawLine(lineStartX, midY - windLineGap, lineStartX + windLineLength, midY - windLineGap);
+        dc.drawArc(lineStartX + windLineLength, midY - windLineGap - arcRadius, arcRadius, Graphics.ARC_COUNTER_CLOCKWISE, -90, 130);
+
+        dc.drawLine(offsetLineStartX, midY, offsetLineStartX + windLineLength, midY);
+        dc.drawArc(offsetLineStartX + windLineLength, midY - arcRadius, arcRadius, Graphics.ARC_COUNTER_CLOCKWISE, -90, 130);
+
+        dc.drawLine(lineStartX, midY + windLineGap, lineStartX + windLineLength, midY + windLineGap);
+        dc.drawArc(lineStartX + windLineLength, midY + windLineGap + arcRadius, arcRadius, Graphics.ARC_COUNTER_CLOCKWISE, -130, 90);
+
+        dc.clearClip();
+    }
+
     function getNextSunEventColor() as Graphics.ColorType {
         var currentLocation = getCurrentLocation();
         if (currentLocation != null) {
@@ -355,11 +378,14 @@ class watch_faceView extends WatchUi.WatchFace {
 
             var sunnyConditions = [0, 1, 22, 23, 40];
             var rainyConditions = [3, 6, 11, 12, 13, 14, 15, 24, 25, 26, 31, 41, 42, 49];
+            var windyConditions = [5, 32];
 
             if (sunnyConditions.indexOf(condition) != -1) {
                 drawSun(dc, midX, midY);
             } else if (rainyConditions.indexOf(condition) != -1) {
                 drawRainDrop(dc, midX, midY);
+            } else if (windyConditions.indexOf(condition) != -1) {
+                drawWind(dc, midX, midY);
             }
         }
     }
