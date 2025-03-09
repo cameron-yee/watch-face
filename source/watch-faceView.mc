@@ -288,6 +288,24 @@ class watch_faceView extends WatchUi.WatchFace {
         dc.clearClip();
     }
 
+    function drawCloud(dc as Dc, midX as Lang.Number, midY as Lang.Number) as Void {
+        var cloudLineLength = 15;
+        var arcRadius = 4;
+
+        var lineStartX = midX - cloudLineLength/2;
+
+        dc.setClip(lineStartX-arcRadius, midY - arcRadius*4, cloudLineLength + arcRadius*2+1, arcRadius*4+1);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+
+        dc.drawLine(lineStartX, midY, lineStartX + cloudLineLength, midY);
+        dc.drawArc(lineStartX + cloudLineLength, midY - arcRadius, arcRadius, Graphics.ARC_COUNTER_CLOCKWISE, -90, 90);
+        dc.drawArc(lineStartX, midY - arcRadius, arcRadius, Graphics.ARC_CLOCKWISE, -90, 90);
+        dc.drawArc(lineStartX + arcRadius, midY - arcRadius*2, arcRadius + 1, Graphics.ARC_CLOCKWISE, 180, 0);
+        dc.drawArc(lineStartX + arcRadius + arcRadius*2, midY - arcRadius*2, arcRadius * 1.5, Graphics.ARC_CLOCKWISE, 130, -15);
+
+        dc.clearClip();
+    }
+
     function getNextSunEventColor() as Graphics.ColorType {
         var currentLocation = getCurrentLocation();
         if (currentLocation != null) {
@@ -379,6 +397,7 @@ class watch_faceView extends WatchUi.WatchFace {
             var sunnyConditions = [0, 1, 22, 23, 40];
             var rainyConditions = [3, 6, 11, 12, 13, 14, 15, 24, 25, 26, 31, 41, 42, 49];
             var windyConditions = [5, 32];
+            var cloudyConditions = [2, 20];
 
             if (sunnyConditions.indexOf(condition) != -1) {
                 drawSun(dc, midX, midY);
@@ -386,6 +405,8 @@ class watch_faceView extends WatchUi.WatchFace {
                 drawRainDrop(dc, midX, midY);
             } else if (windyConditions.indexOf(condition) != -1) {
                 drawWind(dc, midX, midY);
+            } else if (cloudyConditions.indexOf(condition) != -1) {
+                drawCloud(dc, midX, midY);
             }
         }
     }
