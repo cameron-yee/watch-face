@@ -306,6 +306,31 @@ class watch_faceView extends WatchUi.WatchFace {
         dc.clearClip();
     }
 
+    function drawSnow(dc as Dc, midX as Lang.Number, midY as Lang.Number) as Void {
+        var snowLineLength = 30;
+        var sixthCircle = 2*Math.PI/6;
+        var mainLineCircleRadius = snowLineLength/2;
+        var armCircleRadius = snowLineLength/4;
+        var armAngle = Math.PI/8;
+
+        dc.setClip(midX-mainLineCircleRadius,midY-mainLineCircleRadius,snowLineLength,snowLineLength);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+
+        for (var i = 1; i < 7; i++) {
+            var mc = getCircleCoordinates(sixthCircle * i, mainLineCircleRadius, midX, midY);
+            dc.drawLine(midX, midY, mc[0], mc[1]);
+
+            var armStartCoordinates = getCircleCoordinates(sixthCircle * i, armCircleRadius, midX, midY);
+            var armOneEndCoordinates = getCircleCoordinates(sixthCircle * i + armAngle, mainLineCircleRadius, midX, midY);
+            var armTwoEndCoordinates = getCircleCoordinates(sixthCircle * i - armAngle, mainLineCircleRadius, midX, midY);
+
+            dc.drawLine(armStartCoordinates[0], armStartCoordinates[1], armOneEndCoordinates[0], armOneEndCoordinates[1]);
+            dc.drawLine(armStartCoordinates[0], armStartCoordinates[1], armTwoEndCoordinates[0], armTwoEndCoordinates[1]);
+        }
+
+        dc.clearClip();
+    }
+
     function getNextSunEventColor() as Graphics.ColorType {
         var currentLocation = getCurrentLocation();
         if (currentLocation != null) {
@@ -398,6 +423,7 @@ class watch_faceView extends WatchUi.WatchFace {
             var rainyConditions = [3, 6, 11, 12, 13, 14, 15, 24, 25, 26, 31, 41, 42, 49];
             var windyConditions = [5, 32];
             var cloudyConditions = [2, 20];
+            var snowyConditions = [4, 16, 17, 18, 19, 21, 43, 44, 46, 47, 48, 50, 51];
 
             if (sunnyConditions.indexOf(condition) != -1) {
                 drawSun(dc, midX, midY);
@@ -407,6 +433,8 @@ class watch_faceView extends WatchUi.WatchFace {
                 drawWind(dc, midX, midY);
             } else if (cloudyConditions.indexOf(condition) != -1) {
                 drawCloud(dc, midX, midY);
+            } else if (snowyConditions.indexOf(condition) != -1) {
+                drawSnow(dc, midX, midY);
             }
         }
     }
