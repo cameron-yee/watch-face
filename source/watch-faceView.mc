@@ -251,6 +251,38 @@ class watch_faceView extends WatchUi.WatchFace {
         dc.clearClip();
     }
 
+    function drawMoon(dc as Dc, midX as Lang.Number, midY as Lang.Number) as Void {
+        var outerMoonRadius = 10;
+        var moonPointCoordinates = getCircleCoordinates(4*Math.PI/3, outerMoonRadius, midX, midY);
+        var innerMoonRadius = midY - moonPointCoordinates[1];
+
+        var moonPointX = moonPointCoordinates[0];
+
+        dc.setClip(moonPointX, midY - outerMoonRadius, midX - moonPointX + outerMoonRadius+1, outerMoonRadius*2+1);
+        dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
+
+        dc.drawArc(midX, midY, outerMoonRadius, Graphics.ARC_CLOCKWISE, 120, 240);
+
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawArc(moonPointX, midY, innerMoonRadius, Graphics.ARC_CLOCKWISE, 90, -90);
+
+        dc.clearClip();
+    }
+
+    function drawSunOrMoon(dc as Dc, midX as Lang.Number, midY as Lang.Number) as Void {
+        var currentLocation = getCurrentLocation();
+
+        if (currentLocation != null) {
+            var nextSunEventIsSunrise = isSunrise(currentLocation);
+
+            if (nextSunEventIsSunrise) {
+                drawMoon(dc, midX, midY);
+            } else {
+                drawSun(dc, midX, midY);
+            }
+        }
+    }
+
     function drawRainDrop(dc as Dc, midX as Lang.Number, midY as Lang.Number) as Void {
         var radius = 5;
         var rainDropLength = 15;
@@ -426,7 +458,7 @@ class watch_faceView extends WatchUi.WatchFace {
             var snowyConditions = [4, 16, 17, 18, 19, 21, 43, 44, 46, 47, 48, 50, 51];
 
             if (sunnyConditions.indexOf(condition) != -1) {
-                drawSun(dc, midX, midY);
+                drawSunOrMoon(dc, midX, midY);
             } else if (rainyConditions.indexOf(condition) != -1) {
                 drawRainDrop(dc, midX, midY);
             } else if (windyConditions.indexOf(condition) != -1) {
