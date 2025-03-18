@@ -79,9 +79,9 @@ class WeatherIconView {
                 }).draw(dc);
             } else if (snowyConditions.indexOf(condition) != -1) {
                 new SnowFlake({
-                    :midX => _midX,
-                    :midY => _midY,
-                    :snowLineLength => 30
+                    :locX => _midX,
+                    :locY => _midY,
+                    :width => 30
                 }).draw(dc);
             }
         }
