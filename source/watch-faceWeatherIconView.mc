@@ -59,10 +59,10 @@ class WeatherIconView {
                 drawSunOrMoon(dc, _midX, _midY);
             } else if (rainyConditions.indexOf(condition) != -1) {
                 new RainDrop({
-                     :midX => _midX,
-                     :midY => _midY,
-                     :radius => 5,
-                     :rainDropLength => 15
+                     :locX => _midX,
+                     :locY => _midY,
+                     :height => 15,
+                     :width => 10
                 }).draw(dc);
             } else if (windyConditions.indexOf(condition) != -1) {
                 new Wind({

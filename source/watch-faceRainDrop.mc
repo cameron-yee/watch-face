@@ -1,33 +1,20 @@
 import Toybox.Graphics;
 import Toybox.Lang;
+import Toybox.WatchUi;
 
-class RainDrop {
-    typedef Options as {
-        :midX as Lang.Number,
-        :midY as Lang.Number,
-        :radius as Lang.Number,
-        :rainDropLength as Lang.Number
-    };
-
-    private var _midX as Lang.Number;
-    private var _midY as Lang.Number;
-    private var _radius as Lang.Number;
-    private var _rainDropLength as Lang.Number;
-
-    function initialize(options as Options) {
-        _midX = options[:midX];
-        _midY = options[:midY];
-        _radius = options[:radius];
-        _rainDropLength = options[:rainDropLength];
+class RainDrop extends WatchUi.Drawable {
+    function initialize(options) {
+        Drawable.initialize(options);
     }
 
     function draw(dc as Graphics.Dc) as Void {
-        dc.setClip(_midX - _radius, _midY, (_radius * 2) + 1, _rainDropLength + 7);
+        var _radius = self.width / 2;
+        dc.setClip(self.locX - _radius, self.locY, (_radius * 2) + 1, self.height + 7);
         dc.setColor(Graphics.COLOR_BLUE, Graphics.COLOR_TRANSPARENT);
 
-        dc.drawLine(_midX, _midY, _midX - _radius, _midY + _rainDropLength);
-        dc.drawLine(_midX, _midY, _midX + _radius, _midY + _rainDropLength);
-        dc.drawArc(_midX, _midY + _rainDropLength, _radius, Graphics.ARC_COUNTER_CLOCKWISE, 180, 0);
+        dc.drawLine(self.locX, self.locY, self.locX - _radius, self.locY + self.height);
+        dc.drawLine(self.locX, self.locY, self.locX + _radius, self.locY + self.height);
+        dc.drawArc(self.locX, self.locY + self.height, _radius, Graphics.ARC_COUNTER_CLOCKWISE, 180, 0);
 
         dc.clearClip();
     }
