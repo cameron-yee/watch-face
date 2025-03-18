@@ -26,20 +26,20 @@ class WeatherIconView {
         var nextSunEventIsSunrise = new SunEvents(currentLocation).isSunrise();
 
         if (nextSunEventIsSunrise) {
-            new Moon({
-                :midX => midX,
-                :midY => midY,
-                :outerMoonRadius => 10
-            }).draw(dc);
+            new Moon(
+                { :locX => midX, :locY => midY },
+                { :outerMoonRadius => 10 }
+            ).draw(dc);
         } else {
-            new Sun({
-                :midX => midX,
-                :midY => midY,
-                :sunRadius => 8,
-                :outerRadius => 18,
-                :beamOffset => 3,
-                :numberOfBeams => 16
-            }).draw(dc);
+            new Sun(
+                { :locX => midX, :locY => midY },
+                {
+                    :sunRadius => 8,
+                    :outerRadius => 18,
+                    :beamOffset => 3,
+                    :numberOfBeams => 16
+                }
+            ).draw(dc);
         }
     }
 
