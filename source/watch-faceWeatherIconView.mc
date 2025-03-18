@@ -60,9 +60,9 @@ class WeatherIconView {
             } else if (rainyConditions.indexOf(condition) != -1) {
                 new RainDrop({
                      :locX => _midX,
-                     :locY => _midY,
-                     :height => 15,
-                     :width => 10
+                     :locY => _midY - 15,
+                     :height => 30,
+                     :width => 20
                 }).draw(dc);
             } else if (windyConditions.indexOf(condition) != -1) {
                 new Wind({
