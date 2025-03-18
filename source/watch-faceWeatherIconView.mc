@@ -73,10 +73,9 @@ class WeatherIconView {
                 }).draw(dc);
             } else if (cloudyConditions.indexOf(condition) != -1) {
                 new Cloud({
-                    :midX => _midX,
-                    :midY => _midY,
-                    :radius => 4,
-                    :cloudLineLength => 15
+                    :locX => _midX,
+                    :locY => _midY,
+                    :width => 15
                 }).draw(dc);
             } else if (snowyConditions.indexOf(condition) != -1) {
                 new SnowFlake({
