@@ -66,11 +66,10 @@ class WeatherIconView {
                 }).draw(dc);
             } else if (windyConditions.indexOf(condition) != -1) {
                 new Wind({
-                    :midX => _midX,
-                    :midY => _midY,
-                    :radius => 4,
-                    :windLineLength => 15,
-                    :windLineGap => 5
+                    :locX => _midX,
+                    :locY => _midY,
+                    :height => 18,
+                    :width => 15
                 }).draw(dc);
             } else if (cloudyConditions.indexOf(condition) != -1) {
                 new Cloud({
