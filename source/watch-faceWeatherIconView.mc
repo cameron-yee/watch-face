@@ -26,20 +26,20 @@ class WeatherIconView {
         var nextSunEventIsSunrise = new SunEvents(currentLocation).isSunrise();
 
         if (nextSunEventIsSunrise) {
-            new Moon({
-                :midX => midX,
-                :midY => midY,
-                :outerMoonRadius => 10
-            }).draw(dc);
+            new Moon(
+                { :locX => midX, :locY => midY },
+                { :outerMoonRadius => 10 }
+            ).draw(dc);
         } else {
-            new Sun({
-                :midX => midX,
-                :midY => midY,
-                :sunRadius => 8,
-                :outerRadius => 18,
-                :beamOffset => 3,
-                :numberOfBeams => 16
-            }).draw(dc);
+            new Sun(
+                { :locX => midX, :locY => midY },
+                {
+                    :sunRadius => 8,
+                    :outerRadius => 18,
+                    :beamOffset => 3,
+                    :numberOfBeams => 16
+                }
+            ).draw(dc);
         }
     }
 
@@ -59,31 +59,29 @@ class WeatherIconView {
                 drawSunOrMoon(dc, _midX, _midY);
             } else if (rainyConditions.indexOf(condition) != -1) {
                 new RainDrop({
-                     :midX => _midX,
-                     :midY => _midY,
-                     :radius => 5,
-                     :rainDropLength => 15
+                     :locX => _midX,
+                     :locY => _midY,
+                     :height => 15,
+                     :width => 10
                 }).draw(dc);
             } else if (windyConditions.indexOf(condition) != -1) {
                 new Wind({
-                    :midX => _midX,
-                    :midY => _midY,
-                    :radius => 4,
-                    :windLineLength => 15,
-                    :windLineGap => 5
+                    :locX => _midX,
+                    :locY => _midY,
+                    :height => 18,
+                    :width => 15
                 }).draw(dc);
             } else if (cloudyConditions.indexOf(condition) != -1) {
                 new Cloud({
-                    :midX => _midX,
-                    :midY => _midY,
-                    :radius => 4,
-                    :cloudLineLength => 15
+                    :locX => _midX,
+                    :locY => _midY,
+                    :width => 15
                 }).draw(dc);
             } else if (snowyConditions.indexOf(condition) != -1) {
                 new SnowFlake({
-                    :midX => _midX,
-                    :midY => _midY,
-                    :snowLineLength => 30
+                    :locX => _midX,
+                    :locY => _midY,
+                    :width => 30
                 }).draw(dc);
             }
         }

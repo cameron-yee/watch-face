@@ -1,18 +1,15 @@
 import Toybox.Graphics;
 import Toybox.Lang;
+import Toybox.WatchUi;
 
-class Sun {
-    typedef Options as {
-        :midX as Lang.Number,
-        :midY as Lang.Number,
+class Sun extends WatchUi.Drawable {
+    typedef SunOptions as {
         :sunRadius as Lang.Number,
         :outerRadius as Lang.Number,
         :beamOffset as Lang.Number,
         :numberOfBeams as Lang.Number
     };
 
-    private var _midX as Lang.Number;
-    private var _midY as Lang.Number;
     private var _sunRadius as Lang.Number;
     private var _outerRadius as Lang.Number;
     private var _beamOffset as Lang.Number;
@@ -20,34 +17,34 @@ class Sun {
 
     private var _beamAngles;
 
-    function getBeamAngles(numberOfBeams as Lang.Number) as Lang.Array<Lang.Float or Lang.Number> {
+    function getBeamAngles() as Lang.Array<Lang.Float or Lang.Number> {
         var beamAngles = [] as Lang.Array<Lang.Float or Lang.Number>;
-        for (var i = 0; i < 2 * Math.PI; i += Math.PI / (numberOfBeams / 2)) {
+        for (var i = 0; i < 2 * Math.PI; i += Math.PI / (_numberOfBeams / 2)) {
             beamAngles.add(i);
         }
 
         return beamAngles;
     }
 
-    function initialize(options as Options) {
-        _midX = options[:midX];
-        _midY = options[:midY];
-        _sunRadius = options[:sunRadius];
-        _outerRadius = options[:outerRadius];
-        _beamOffset = options[:beamOffset];
-        _numberOfBeams = options[:numberOfBeams];
-        _beamAngles = getBeamAngles(_numberOfBeams);
+    function initialize(drawableOptions, sunOptions as SunOptions) {
+        Drawable.initialize(drawableOptions);
+
+        _sunRadius = sunOptions[:sunRadius];
+        _outerRadius = sunOptions[:outerRadius];
+        _beamOffset = sunOptions[:beamOffset];
+        _numberOfBeams = sunOptions[:numberOfBeams];
+        _beamAngles = getBeamAngles();
     }
 
     function draw(dc as Graphics.Dc) as Void {
-        dc.setClip(_midX - _outerRadius, _midY - _outerRadius, _outerRadius * 2 + 1, _outerRadius * 2 + 1);
+        dc.setClip(self.locX - _outerRadius, self.locY - _outerRadius, _outerRadius * 2 + 1, _outerRadius * 2 + 1);
 
         dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
-        dc.drawCircle(_midX, _midY, _sunRadius);
+        dc.drawCircle(self.locX, self.locY, _sunRadius);
 
         for (var i = 0; i < _beamAngles.size(); i++) {
-            var innerCoordinates = new Circle(_sunRadius + _beamOffset, _midX, _midY).getCoordinatesAtAngle(_beamAngles[i]);
-            var outerCoordinates = new Circle(_outerRadius, _midX, _midY).getCoordinatesAtAngle(_beamAngles[i]);
+            var innerCoordinates = new Circle(_sunRadius + _beamOffset, self.locX, self.locY).getCoordinatesAtAngle(_beamAngles[i]);
+            var outerCoordinates = new Circle(_outerRadius, self.locX, self.locY).getCoordinatesAtAngle(_beamAngles[i]);
 
             var innerX = innerCoordinates[0];
             var innerY = innerCoordinates[1];
