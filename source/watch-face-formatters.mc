@@ -1,4 +1,5 @@
 import Toybox.Lang;
+import Toybox.System;
 
 function formatAs12Hour(hour as Lang.Number) as Lang.Number {
     return hour < 13
@@ -14,7 +15,7 @@ function formatHoursAndMinutes(hour as Lang.Number, min as Lang.Number) as Lang.
     return Lang.format(
         "$1$:$2$",
         [
-            formatAs12Hour(hour),
+            System.getDeviceSettings().is24Hour ? hour : formatAs12Hour(hour),
             formatAsZeroPaddedNumber(min)
         ]
     );
