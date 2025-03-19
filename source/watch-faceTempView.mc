@@ -1,5 +1,6 @@
 import Toybox.Lang;
 import Toybox.Graphics;
+import Toybox.System;
 import Toybox.Weather;
 import Toybox.WatchUi;
 
@@ -11,34 +12,46 @@ class TempView {
 
     private var _locX as Lang.Number;
     private var _locY as Lang.Number;
-    private var _currentTempF as Lang.Number;
+    private var _currentTemp as Lang.Number;
+    private var _useCelcius as Lang.Boolean;
 
     function convertCelciusToFarenheit(celcius as Lang.Number) as Lang.Number {
         return celcius * 9/5 + 32;
     }
 
-    function getCurrentTempF() as Lang.Number or Null {
+    function getCurrentTempC() as Lang.Number or Null {
         var currentConditions = Weather.getCurrentConditions();
         if (currentConditions != null) {
             var currentTempC = currentConditions.temperature;
             if (currentTempC != null) {
-                return convertCelciusToFarenheit(currentTempC);
+                return currentTempC;
             }
         }
 
         return null;
     }
 
+    function getCurrentTempF() as Lang.Number or Null {
+        return convertCelciusToFarenheit(getCurrentTempC());
+    }
+
+    function getCurrentTemp() as Lang.Number or Null {
+        return _useCelcius
+          ? getCurrentTempC()
+          : getCurrentTempF();
+    }
+
     function initialize(options as Options) {
-        _currentTempF = getCurrentTempF();
         _locX = options[:locX];
         _locY = options[:locY];
+        _useCelcius = System.getDeviceSettings().temperatureUnits == System.UNIT_METRIC;
+        _currentTemp = getCurrentTemp();
     }
 
     function getTempString() as String {
         try {
-            if (_currentTempF != null) {
-                var currentTempString = formatAsZeroPaddedNumber(_currentTempF);
+            if (_currentTemp != null) {
+                var currentTempString = formatAsZeroPaddedNumber(_currentTemp);
 
                 // adding leading spaces to adjust spacing
                 return "  " + currentTempString + "°";
@@ -51,23 +64,32 @@ class TempView {
     }
 
     function getTempColor() as Graphics.ColorType {
-        if (_currentTempF == null) {
+        var temperatureColorMap = [
+            [-12, Graphics.COLOR_DK_GRAY],
+            [0, Graphics.COLOR_WHITE],
+            [10, Graphics.COLOR_GREEN],
+            [21, Graphics.COLOR_YELLOW],
+            [27, Graphics.COLOR_ORANGE],
+            [32, Graphics.COLOR_RED],
+        ];
+
+        if (_currentTemp == null) {
             return Graphics.COLOR_DK_GRAY;
-        } else if (_currentTempF < 10) {
-            return Graphics.COLOR_WHITE;
-        } else if (_currentTempF < 32) {
-            return Graphics.COLOR_BLUE;
-        } else if (_currentTempF < 50) {
-            return Graphics.COLOR_GREEN;
-        } else if (_currentTempF < 70) {
-            return Graphics.COLOR_YELLOW;
-        } else if (_currentTempF < 80) {
-            return Graphics.COLOR_ORANGE;
-        } else if (_currentTempF < 90) {
-            return Graphics.COLOR_RED;
-        } else {
-            return Graphics.COLOR_DK_RED;
         }
+
+        for (var i = 0; i < temperatureColorMap.size(); i++) {
+            var tempSetting = temperatureColorMap[i];
+            for (var j = 0; j < tempSetting.size(); j++) {
+                var temp = _useCelcius ? tempSetting[0] : convertCelciusToFarenheit(tempSetting[0]);
+                var color = tempSetting[1];
+
+                if (_currentTemp < temp) {
+                    return color;
+                }
+            }
+        }
+
+        return Graphics.COLOR_DK_RED;
     }
 
     function update(tempLayout as WatchUi.Text) as Void {
