@@ -5,6 +5,7 @@ import Toybox.WatchUi;
 class RainDrop extends WatchUi.Drawable {
     function initialize(options) {
         Drawable.initialize(options);
+        Drawable.setSize(self.width, self.width*1.5);
     }
 
     function draw(dc as Graphics.Dc) as Void {
