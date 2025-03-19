@@ -28,7 +28,7 @@ class WeatherIconView {
         if (nextSunEventIsSunrise) {
             new Moon(
                 { :locX => midX, :locY => midY },
-                { :outerMoonRadius => 10 }
+                { :outerMoonRadius => 15 }
             ).draw(dc);
         } else {
             new Sun(
