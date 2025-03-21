@@ -22,9 +22,9 @@ class HRView {
         if (_hr == null) {
             return Graphics.COLOR_DK_GRAY;
         } else if (_hr < 130) {
-            return Graphics.COLOR_GREEN;
+            return GREEN;
         } else if (_hr < 170) {
-            return Graphics.COLOR_ORANGE;
+            return YELLOW;
         } else {
             return Graphics.COLOR_RED;
         }
