@@ -1,4 +1,6 @@
 import Toybox.Lang;
+import Toybox.Graphics;
+import Toybox.System;
 import Toybox.WatchUi;
 
 class TimeView {
@@ -9,19 +11,26 @@ class TimeView {
 
     private var _locX as Lang.Number;
     private var _locY as Lang.Number;
+    private var _hourString as Lang.String;
+    private var _minString as Lang.String;
 
-    function initialize(options as Options) {
-        _locX = options[:locX];
+    function initialize(options as Options, dc as Graphics.Dc) {
+        var clockTime = System.getClockTime();
+        _hourString = formatHour(clockTime.hour);
+        _minString = formatMin(clockTime.min);
+
+        var adjustmentWidth = dc.getTextWidthInPixels(_minString.substring(0,1), Graphics.FONT_SYSTEM_NUMBER_THAI_HOT);
+
+        _locX = options[:locX] - adjustmentWidth / 2;
         _locY = options[:locY];
     }
 
-    function getTimeString() as Lang.String {
-        var clockTime = System.getClockTime();
-        return formatHoursAndMinutes(clockTime.hour, clockTime.min);
-    }
-
-    function update(timeLayout as WatchUi.Text) as Void {
-        timeLayout.setLocation(_locX, _locY);
-        timeLayout.setText(getTimeString());
+    function update(hoursLayout as WatchUi.Text, minutesLayout as WatchUi.Text) as Void {
+        hoursLayout.setText(_hourString);
+        hoursLayout.setLocation(_locX, _locY);
+        hoursLayout.setColor(CYAN);
+        minutesLayout.setText(_minString);
+        minutesLayout.setLocation(_locX, _locY);
+        minutesLayout.setColor(PURPLE);
     }
 }

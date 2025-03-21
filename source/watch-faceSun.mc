@@ -39,7 +39,7 @@ class Sun extends WatchUi.Drawable {
     function draw(dc as Graphics.Dc) as Void {
         dc.setClip(self.locX - _outerRadius, self.locY - _outerRadius, _outerRadius * 2 + 1, _outerRadius * 2 + 1);
 
-        dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(GREEN, Graphics.COLOR_TRANSPARENT);
         dc.drawCircle(self.locX, self.locY, _sunRadius);
 
         for (var i = 0; i < _beamAngles.size(); i++) {
@@ -52,7 +52,7 @@ class Sun extends WatchUi.Drawable {
             var outerX = outerCoordinates[0];
             var outerY = outerCoordinates[1];
 
-            dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(YELLOW, Graphics.COLOR_TRANSPARENT);
             dc.drawLine(innerX, innerY, outerX, outerY);
         }
 
