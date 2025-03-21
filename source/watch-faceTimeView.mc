@@ -19,7 +19,9 @@ class TimeView {
         _hourString = formatHour(clockTime.hour);
         _minString = formatMin(clockTime.min);
 
-        var adjustmentWidth = dc.getTextWidthInPixels(_minString.substring(0,1), Graphics.FONT_SYSTEM_NUMBER_THAI_HOT);
+         var adjustmentWidth = _hourString.length() == 1
+           ? dc.getTextWidthInPixels(_minString.substring(0,1), Graphics.FONT_SYSTEM_NUMBER_THAI_HOT)
+           : 0;
 
         _locX = options[:locX] - adjustmentWidth / 2;
         _locY = options[:locY];
