@@ -69,7 +69,7 @@ class watch_faceView extends WatchUi.WatchFace {
             :midX => midX,
             :midY => environmentValuesY + 60
         }).update(dc);
-   }
+    }
 
     // Called when this View is removed from the screen. Save the
     // state of this View here. This includes freeing resources from
