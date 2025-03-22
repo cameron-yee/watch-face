@@ -39,10 +39,11 @@ class watch_faceView extends WatchUi.WatchFace {
 
             var hourLayout = WatchUi.View.findDrawableById(HOUR_LABEL) as WatchUi.Text;
             var minutesLayout = WatchUi.View.findDrawableById(MINUTES_LABEL) as WatchUi.Text;
+            var dateLayout = WatchUi.View.findDrawableById(DATE_LABEL) as WatchUi.Text;
             new TimeView({
                 :locX => midX,
-                :locY => WatchUi.LAYOUT_VALIGN_CENTER
-            }, dc).update(hourLayout, minutesLayout);
+                :locY => midY
+            }, dc).update(hourLayout, minutesLayout, dateLayout);
 
             var hrLayout = WatchUi.View.findDrawableById(HR_LABEL) as WatchUi.Text;
             var hrLoc = watchFacePerimeter.getCoordinatesAtAngle(3*Math.PI/2);
