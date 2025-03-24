@@ -1,6 +1,9 @@
 <layout id="WatchFace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
-    <label id="HRLabel" font="Graphics.FONT_SYSTEM_NUMBER_HOT" justification="Graphics.TEXT_JUSTIFY_CENTER" />
-    <label id="TimeLabel" font="Graphics.FONT_NUMBER_THAI_HOT" justification="Graphics.TEXT_JUSTIFY_CENTER" color="Graphics.COLOR_BLUE" />
+    <label id="HRLabel" font="Graphics.FONT_NUMBER_MEDIUM" justification="Graphics.TEXT_JUSTIFY_CENTER" />
+    <label id="HourLabel" font="Graphics.FONT_NUMBER_THAI_HOT" justification="Graphics.TEXT_JUSTIFY_RIGHT" />
+    <label id="MinutesLabel" font="Graphics.FONT_NUMBER_THAI_HOT" justification="Graphics.TEXT_JUSTIFY_LEFT" />
+    <label id="DateLabel" font="Graphics.FONT_SYSTEM_XTINY" justification="Graphics.TEXT_JUSTIFY_CENTER" />
     <label id="TempLabel" font="Graphics.FONT_MEDIUM" justification="Graphics.TEXT_JUSTIFY_RIGHT" />
-    <label id="SunsetOrSunriseLabel" font="Graphics.FONT_MEDIUM" justification="Graphics.TEXT_JUSTIFY_LEFT" />
+    <label id="SunsetOrSunriseHourLabel" font="Graphics.FONT_MEDIUM" justification="Graphics.TEXT_JUSTIFY_LEFT" />
+    <label id="SunsetOrSunriseMinutesLabel" font="Graphics.FONT_MEDIUM" justification="Graphics.TEXT_JUSTIFY_LEFT" />
 </layout>

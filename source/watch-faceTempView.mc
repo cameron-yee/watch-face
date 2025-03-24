@@ -53,8 +53,7 @@ class TempView {
             if (_currentTemp != null) {
                 var currentTempString = formatAsZeroPaddedNumber(_currentTemp);
 
-                // adding leading spaces to adjust spacing
-                return "  " + currentTempString + "°";
+                return currentTempString + "°";
             }
         } catch (ex) {
             return EXCEPTION_STRING;
@@ -67,10 +66,10 @@ class TempView {
         var temperatureColorMap = [
             [-12, Graphics.COLOR_DK_GRAY],
             [0, Graphics.COLOR_WHITE],
-            [10, Graphics.COLOR_GREEN],
-            [21, Graphics.COLOR_YELLOW],
+            [10, GREEN],
+            [21, YELLOW],
             [27, Graphics.COLOR_ORANGE],
-            [32, Graphics.COLOR_RED],
+            [32, RED],
         ];
 
         if (_currentTemp == null) {

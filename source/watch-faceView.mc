@@ -1,4 +1,5 @@
 import Toybox.Graphics;
+import Toybox.Math;
 import Toybox.WatchUi;
 
 class watch_faceView extends WatchUi.WatchFace {
@@ -22,35 +23,43 @@ class watch_faceView extends WatchUi.WatchFace {
         var screenHeight = dc.getHeight();
 
         var midX = screenWidth/2;
-        var quarterX = screenWidth/4;
         var midY = screenHeight/2;
         var sixthY = screenHeight/6;
         var environmentValuesY = midY + sixthY;
 
         try {
+            var watchFacePerimeter = new Circle(environmentValuesY + 60 - midY, midX, midY);
+
             var tempLayout = WatchUi.View.findDrawableById(TEMP_LABEL) as WatchUi.Text;
+            var tempLoc = watchFacePerimeter.getCoordinatesAtAngle(Math.PI/4.5);
             new TempView({
-                 :locX => midX + quarterX,
-                 :locY => environmentValuesY
+                 :locX => tempLoc[0],
+                 :locY => tempLoc[1]
             }).update(tempLayout);
 
-            var timeLayout = WatchUi.View.findDrawableById(TIME_LABEL) as WatchUi.Text;
+            var hourLayout = WatchUi.View.findDrawableById(HOUR_LABEL) as WatchUi.Text;
+            var minutesLayout = WatchUi.View.findDrawableById(MINUTES_LABEL) as WatchUi.Text;
+            var dateLayout = WatchUi.View.findDrawableById(DATE_LABEL) as WatchUi.Text;
             new TimeView({
-                :locX => WatchUi.LAYOUT_VALIGN_CENTER,
-                :locY => WatchUi.LAYOUT_VALIGN_CENTER
-            }).update(timeLayout);
+                :locX => midX,
+                :locY => midY
+            }, dc).update(hourLayout, minutesLayout, dateLayout);
 
             var hrLayout = WatchUi.View.findDrawableById(HR_LABEL) as WatchUi.Text;
+            var hrLoc = watchFacePerimeter.getCoordinatesAtAngle(3*Math.PI/2);
             new HRView({
-                :locX => WatchUi.LAYOUT_VALIGN_CENTER,
-                :locY => WatchUi.LAYOUT_VALIGN_TOP
+                :locX => hrLoc[0],
+                :locY => hrLoc[1] - dc.getFontHeight(Graphics.FONT_NUMBER_MEDIUM)/2
             }).update(hrLayout);
 
-            var sunsetOrSunriseLayout = WatchUi.View.findDrawableById(SUNSET_OR_SUNRISE_LABEL) as WatchUi.Text;
+            var sunsetOrSunriseHourLayout = WatchUi.View.findDrawableById(SUNSET_OR_SUNRISE_HOUR_LABEL) as WatchUi.Text;
+            var sunsetOrSunriseMinutesLayout = WatchUi.View.findDrawableById(SUNSET_OR_SUNRISE_MINUTES_LABEL) as WatchUi.Text;
+            var sunsetOrSunriseLoc = watchFacePerimeter.getCoordinatesAtAngle(3.5*Math.PI/4.5);
+
             new SunsetOrSunriseView({
-                :locX => midX - quarterX,
-                :locY => environmentValuesY
-            }).update(sunsetOrSunriseLayout);
+                :locX => sunsetOrSunriseLoc[0],
+                :locY => sunsetOrSunriseLoc[1]
+            }, dc).update(sunsetOrSunriseHourLayout, sunsetOrSunriseMinutesLayout);
         } catch (ex) {}
 
         // Call the parent onUpdate function to redraw the layout
