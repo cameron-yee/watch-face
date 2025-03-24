@@ -15,7 +15,7 @@ class Sun extends WatchUi.Drawable {
     private var _beamOffset as Lang.Number;
     private var _numberOfBeams as Lang.Number;
 
-    private var _beamAngles;
+    private var _beamAngles as Lang.Array<Lang.Float or Lang.Number>;
 
     function getBeamAngles() as Lang.Array<Lang.Float or Lang.Number> {
         var beamAngles = [] as Lang.Array<Lang.Float or Lang.Number>;
