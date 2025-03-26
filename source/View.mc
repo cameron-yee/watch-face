@@ -2,7 +2,7 @@ import Toybox.Graphics;
 import Toybox.Math;
 import Toybox.WatchUi;
 
-class watch_faceView extends WatchUi.WatchFace {
+class View extends WatchUi.WatchFace {
     function initialize() {
         WatchFace.initialize();
     }
