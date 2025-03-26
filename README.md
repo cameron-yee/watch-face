@@ -26,7 +26,7 @@ A simple watch face for the Garmin Vivoactive 4.
 
 ## Contributing Information
 
-- The main view is defined in `View.mc`. All functionality is defined in separate files and then implemented either directly or indirectly in the `onUpdate` method of the `watch_faceView` class.
+- The main view is defined in `View.mc`. All functionality is defined in separate files and then implemented either directly or indirectly in the `onUpdate` method of the `View` class.
 - Run the development emulator by running the Monkey C Debugger (CTRL + F5 in VSCode)
 - To build a release file run **Monkey C: Export Project** (CMD + Shift + P in VSCode)
   - Upload the `*.iq` file in the Garmin Connect IQ developer dashboard
