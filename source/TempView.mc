@@ -69,7 +69,7 @@ class TempView {
             [10, GREEN],
             [21, YELLOW],
             [27, Graphics.COLOR_ORANGE],
-            [32, RED],
+            [32, Graphics.COLOR_RED],
         ];
 
         if (_currentTemp == null) {
