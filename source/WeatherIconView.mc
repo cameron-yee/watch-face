@@ -47,8 +47,7 @@ class WeatherIconView {
         var currentConditions = Weather.getCurrentConditions();
 
         if (currentConditions != null && currentConditions.condition != null) {
-            // var condition = currentConditions.condition;
-            var condition = 0;
+            var condition = currentConditions.condition;
 
             var sunnyConditions = [0, 1, 22, 23, 40];
             var rainyConditions = [3, 6, 11, 12, 13, 14, 15, 24, 25, 26, 31, 41, 42, 49];
