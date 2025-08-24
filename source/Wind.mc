@@ -20,7 +20,7 @@ class Wind extends WatchUi.Drawable {
         var offsetLineStartX = self.locX - _windLineLength / 3;
 
         dc.setClip(lineStartX, self.locY - _windLineGap - _radius*2, offsetLineStartX + _windLineLength + _radius, self.locY + _windLineGap + _radius*2);
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
 
         dc.drawLine(lineStartX, self.locY - _windLineGap, lineStartX + _windLineLength, self.locY - _windLineGap);
         dc.drawArc(lineStartX + _windLineLength, self.locY - _windLineGap - _radius, _radius, Graphics.ARC_COUNTER_CLOCKWISE, -90, 130);

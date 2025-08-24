@@ -23,11 +23,11 @@ class Moon extends WatchUi.Drawable {
         var moonPointX = moonPointCoordinates[0];
 
         dc.setClip(self.locX - _outerMoonRadius, self.locY - _outerMoonRadius, _outerMoonRadius * 2 + 1, _outerMoonRadius * 2 + 1);
-        dc.setColor(YELLOW, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(YELLOW, Graphics.COLOR_BLACK);
 
         dc.drawArc(self.locX, self.locY, _outerMoonRadius, Graphics.ARC_CLOCKWISE, 120, 240);
 
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
         dc.drawArc(moonPointX, self.locY, innerMoonRadius, Graphics.ARC_CLOCKWISE, 90, -90);
 
         dc.clearClip();

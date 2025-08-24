@@ -47,7 +47,8 @@ class WeatherIconView {
         var currentConditions = Weather.getCurrentConditions();
 
         if (currentConditions != null && currentConditions.condition != null) {
-            var condition = currentConditions.condition;
+            // var condition = currentConditions.condition;
+            var condition = 0;
 
             var sunnyConditions = [0, 1, 22, 23, 40];
             var rainyConditions = [3, 6, 11, 12, 13, 14, 15, 24, 25, 26, 31, 41, 42, 49];
@@ -56,6 +57,7 @@ class WeatherIconView {
             var snowyConditions = [4, 16, 17, 18, 19, 21, 43, 44, 46, 47, 48, 50, 51];
 
             if (sunnyConditions.indexOf(condition) != -1) {
+                System.println("Sun");
                 drawSunOrMoon(dc, _midX, _midY);
             } else if (rainyConditions.indexOf(condition) != -1) {
                 new RainDrop({

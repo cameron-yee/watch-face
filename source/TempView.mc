@@ -10,6 +10,7 @@ class TempView {
         :locY as Lang.Number
     };
 
+    private var _dc as Graphics.Dc;
     private var _locX as Lang.Number;
     private var _locY as Lang.Number;
     private var _currentTemp as Lang.Number;
@@ -41,7 +42,8 @@ class TempView {
           : getCurrentTempF();
     }
 
-    function initialize(options as Options) {
+    function initialize(options as Options, dc as Graphics.Dc) {
+        _dc = dc;
         _locX = options[:locX];
         _locY = options[:locY];
         _useCelcius = System.getDeviceSettings().temperatureUnits == System.UNIT_METRIC;
@@ -91,9 +93,8 @@ class TempView {
         return Graphics.COLOR_DK_RED;
     }
 
-    function update(tempLayout as WatchUi.Text) as Void {
-        tempLayout.setText(getTempString());
-        tempLayout.setLocation(_locX, _locY);
-        tempLayout.setColor(getTempColor());
+    function update() as Void {
+        _dc.setColor(getTempColor(), Graphics.COLOR_BLACK);
+        _dc.drawText(_locX, _locY, Graphics.FONT_MEDIUM, getTempString(), Graphics.TEXT_JUSTIFY_RIGHT);
     }
 }

@@ -15,7 +15,7 @@ class Cloud extends WatchUi.Drawable {
         var lineStartX = self.locX - self.width/2;
 
         dc.setClip(lineStartX-_radius, self.locY - _radius*4, self.width + _radius*2+1, _radius*4+1);
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
 
         dc.drawLine(lineStartX, self.locY, lineStartX + self.width, self.locY);
         dc.drawArc(lineStartX + self.width, self.locY - _radius, _radius, Graphics.ARC_COUNTER_CLOCKWISE, -90, 90);
