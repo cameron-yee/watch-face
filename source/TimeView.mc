@@ -37,14 +37,9 @@ class TimeView {
         _date = today.day;
         _month = today.month - 1;
 
-        var adjustmentWidth = _hourString.length() == 1
-           ? dc.getTextWidthInPixels(_minString.substring(0,1), _timeFont)
-           : 0;
-
         var timeAdjustmentHeight = dc.getFontHeight(_timeFont) / 2;
         var dateAdjustmentHeight = dc.getFontHeight(_dateFont);
 
-        //_locX = options[:locX] - adjustmentWidth / 2;
         _locY = options[:locY] - timeAdjustmentHeight - dateAdjustmentHeight;
 
         _dateLocX = options[:locX];

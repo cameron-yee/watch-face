@@ -30,10 +30,14 @@ class View extends WatchUi.View {
             if (System.getDeviceSettings().elevationUnits != System.UNIT_METRIC) {
                 altitude = altitude * 3.28084;
             }
-            var altitudeText = altitude == null ? DEFAULT_STRING : altitude;
+            var altitudeText = altitude == null ? DEFAULT_STRING : altitude.format("%.2f");
 
             dc.setColor(YELLOW, Graphics.COLOR_BLACK);
-            dc.drawText(midX, midY - dc.getFontHeight(Graphics.FONT_SMALL) / 2, Graphics.FONT_SMALL, altitudeText, Graphics.TEXT_JUSTIFY_CENTER);
+            // dc.drawText(midX, midY - dc.getFontHeight(Graphics.FONT_NUMBER_MEDIUM) + Graphics.getFontDescent(Graphics.FONT_NUMBER_MEDIUM) - 5, Graphics.FONT_NUMBER_MEDIUM, altitudeText, Graphics.TEXT_JUSTIFY_CENTER);
+            dc.drawText(midX, midY - dc.getFontHeight(Graphics.FONT_NUMBER_MEDIUM)/2 - Graphics.getFontHeight(Graphics.FONT_SYSTEM_XTINY)/1.5, Graphics.FONT_NUMBER_MEDIUM, altitudeText, Graphics.TEXT_JUSTIFY_CENTER);
+            dc.setColor(GRAY, Graphics.COLOR_BLACK);
+            //dc.drawText(midX, midY, Graphics.FONT_SYSTEM_XTINY, "ALTITUDE", Graphics.TEXT_JUSTIFY_CENTER);
+            dc.drawText(midX, midY + Graphics.getFontHeight(Graphics.FONT_SYSTEM_XTINY)/1.5, Graphics.FONT_SYSTEM_XTINY, "ALTITUDE", Graphics.TEXT_JUSTIFY_CENTER);
         } else {
             var tempLoc = watchFacePerimeter.getCoordinatesAtAngle(Math.PI/4.5);
             new TempView({
