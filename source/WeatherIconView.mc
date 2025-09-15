@@ -56,6 +56,7 @@ class WeatherIconView {
             var snowyConditions = [4, 16, 17, 18, 19, 21, 43, 44, 46, 47, 48, 50, 51];
 
             if (sunnyConditions.indexOf(condition) != -1) {
+                System.println("Sun");
                 drawSunOrMoon(dc, _midX, _midY);
             } else if (rainyConditions.indexOf(condition) != -1) {
                 new RainDrop({

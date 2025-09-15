@@ -8,11 +8,13 @@ class HRView {
         :locY as Lang.Number
     };
 
+    private var _dc as Graphics.Dc;
     private var _locX as Lang.Number;
     private var _locY as Lang.Number;
     private var _hr as Lang.Number or Null;
 
-    function initialize(options as Options) {
+    function initialize(options as Options, dc as Graphics.Dc) {
+        _dc = dc;
         _locX = options[:locX];
         _locY = options[:locY];
         _hr = new ActivityInfoData().getHR();
@@ -30,14 +32,13 @@ class HRView {
         }
     }
 
-    function update(hrLayout as WatchUi.Text) as Void {
-        if (_hr != null) {
-            hrLayout.setText(formatAsZeroPaddedNumber(_hr));
-        } else {
-            hrLayout.setText(DEFAULT_STRING);
-        }
+    function update() as Void {
+        _dc.setColor(getHRColor(), Graphics.COLOR_BLACK);
 
-        hrLayout.setLocation(_locX, _locY);
-        hrLayout.setColor(getHRColor());
+        if (_hr != null) {
+            _dc.drawText(_locX, _locY, Graphics.FONT_NUMBER_MEDIUM, formatAsZeroPaddedNumber(_hr), Graphics.TEXT_JUSTIFY_CENTER);
+        } else {
+            _dc.drawText(_locX, _locY, Graphics.FONT_NUMBER_MEDIUM, DEFAULT_STRING, Graphics.TEXT_JUSTIFY_CENTER);
+        }
     }
 }

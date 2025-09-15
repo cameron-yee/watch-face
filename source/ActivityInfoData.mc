@@ -37,4 +37,12 @@ class ActivityInfoData {
 
         return null;
     }
+
+    function getAltitude() as Lang.Number or Null {
+        if (_activityInfo != null && _activityInfo.altitude != null) {
+            return _activityInfo.altitude;
+        }
+
+        return null;
+    }
 }

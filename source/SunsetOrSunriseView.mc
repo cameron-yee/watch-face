@@ -11,6 +11,7 @@ class SunsetOrSunriseView {
         :locY as Lang.Number
     };
 
+    private var _dc as Graphics.Dc;
     private var _locX as Lang.Number;
     private var _locY as Lang.Number;
     private var _hourString as Lang.String;
@@ -35,6 +36,8 @@ class SunsetOrSunriseView {
     }
 
     function initialize(options as Options, dc as Graphics.Dc) {
+        _dc = dc;
+
         var timeInfo = getSunsetOrSunriseTimeInfo();
         _hourString = timeInfo != null ? formatHour(timeInfo.hour) : DEFAULT_STRING;
         _minString = timeInfo != null ? formatMin(timeInfo.min) : DEFAULT_STRING;
@@ -58,16 +61,14 @@ class SunsetOrSunriseView {
         return [PINK, GRAY];
     }
 
-    function update(sunsetOrSunriseHourLayout as WatchUi.Text, sunsetOrSunriseMinutesLayout as WatchUi.Text) as Void {
+    function update() as Void {
         var colors = getNextSunEventColor();
 
-        sunsetOrSunriseHourLayout.setText(_hourString);
-        sunsetOrSunriseHourLayout.setColor(colors[0]);
-        sunsetOrSunriseHourLayout.setLocation(_locX, _locY);
+        _dc.setColor(colors[0], Graphics.COLOR_BLACK);
+        _dc.drawText(_locX, _locY, Graphics.FONT_MEDIUM, _hourString, Graphics.TEXT_JUSTIFY_LEFT);
 
-        sunsetOrSunriseMinutesLayout.setText(_minString);
-        sunsetOrSunriseMinutesLayout.setColor(colors[1]);
-        sunsetOrSunriseMinutesLayout.setLocation(_locX + _minuteAdjustmentWidth, _locY);
+        _dc.setColor(colors[1], Graphics.COLOR_BLACK);
+        _dc.drawText(_locX + _minuteAdjustmentWidth, _locY, Graphics.FONT_MEDIUM , _minString, Graphics.TEXT_JUSTIFY_LEFT);
     }
 }
 

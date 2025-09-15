@@ -14,7 +14,7 @@ class SnowFlake extends WatchUi.Drawable {
         var armAngle = Math.PI/8;
 
         dc.setClip(self.locX-mainLineCircleRadius, self.locY-mainLineCircleRadius, self.width, self.width);
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
 
         for (var i = 1; i < 7; i++) {
             var mc = new Circle(mainLineCircleRadius, self.locX, self.locY).getCoordinatesAtAngle(sixthCircle * i);
