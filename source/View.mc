@@ -32,44 +32,78 @@ class View extends WatchUi.WatchFace {
 
             var tempLayout = WatchUi.View.findDrawableById(TEMP_LABEL) as WatchUi.Text;
             var tempLoc = watchFacePerimeter.getCoordinatesAtAngle(Math.PI/4.5);
-            new TempView({
-                 :locX => tempLoc[0],
-                 :locY => tempLoc[1]
-            }).update(tempLayout);
+
+            var hrLoc = watchFacePerimeter.getCoordinatesAtAngle(3*Math.PI/2);
+            var sunsetOrSunriseLoc = watchFacePerimeter.getCoordinatesAtAngle(3.5*Math.PI/4.5);
 
             var hourLayout = WatchUi.View.findDrawableById(HOUR_LABEL) as WatchUi.Text;
             var minutesLayout = WatchUi.View.findDrawableById(MINUTES_LABEL) as WatchUi.Text;
             var dateLayout = WatchUi.View.findDrawableById(DATE_LABEL) as WatchUi.Text;
-            new TimeView({
-                :locX => midX,
-                :locY => midY
-            }, dc).update(hourLayout, minutesLayout, dateLayout);
 
             var hrLayout = WatchUi.View.findDrawableById(HR_LABEL) as WatchUi.Text;
-            var hrLoc = watchFacePerimeter.getCoordinatesAtAngle(3*Math.PI/2);
-            new HRView({
-                :locX => hrLoc[0],
-                :locY => hrLoc[1] - dc.getFontHeight(Graphics.FONT_NUMBER_MEDIUM)/2
-            }).update(hrLayout);
 
             var sunsetOrSunriseHourLayout = WatchUi.View.findDrawableById(SUNSET_OR_SUNRISE_HOUR_LABEL) as WatchUi.Text;
             var sunsetOrSunriseMinutesLayout = WatchUi.View.findDrawableById(SUNSET_OR_SUNRISE_MINUTES_LABEL) as WatchUi.Text;
-            var sunsetOrSunriseLoc = watchFacePerimeter.getCoordinatesAtAngle(3.5*Math.PI/4.5);
 
-            new SunsetOrSunriseView({
-                :locX => sunsetOrSunriseLoc[0],
-                :locY => sunsetOrSunriseLoc[1]
-            }, dc).update(sunsetOrSunriseHourLayout, sunsetOrSunriseMinutesLayout);
+            try {
+                new TempView({
+                    :locX => tempLoc[0],
+                    :locY => tempLoc[1]
+                }).update(tempLayout);
+            } catch (ex) {
+                new ErrorView({
+                    :locX => tempLoc[0],
+                    :locY => tempLoc[1]
+                }, dc).update(tempLayout);
+            }
+
+            try {
+                new TimeView({
+                    :locX => midX,
+                    :locY => midY
+                }, dc).update(hourLayout, minutesLayout, dateLayout);
+            } catch (ex) {
+                new ErrorView({
+                    :locX => midX,
+                    :locY => midY
+                }, dc).update(hourLayout);
+            }
+
+            try {
+                new HRView({
+                    :locX => hrLoc[0],
+                    :locY => hrLoc[1] - dc.getFontHeight(Graphics.FONT_NUMBER_MEDIUM)/2
+                }).update(hrLayout);
+            } catch (ex) {
+                new ErrorView({
+                    :locX => hrLoc[0],
+                    :locY => hrLoc[1] - dc.getFontHeight(Graphics.FONT_NUMBER_MEDIUM)/2
+                }, dc).update(hrLayout);
+            }
+
+            try {
+                new SunsetOrSunriseView({
+                    :locX => sunsetOrSunriseLoc[0],
+                    :locY => sunsetOrSunriseLoc[1]
+                }, dc).update(sunsetOrSunriseHourLayout, sunsetOrSunriseMinutesLayout);
+            } catch (ex) {
+                new ErrorView({
+                    :locX => sunsetOrSunriseLoc[0],
+                    :locY => sunsetOrSunriseLoc[1]
+                }, dc).update(sunsetOrSunriseHourLayout);
+            }
         } catch (ex) {}
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
 
-        // Draw custom drawables after calling View.onUpdate(dc);
-        new WeatherIconView({
-            :midX => midX,
-            :midY => environmentValuesY + 60
-        }).update(dc);
+        try {
+            // Draw custom drawables after calling View.onUpdate(dc);
+            new WeatherIconView({
+                :midX => midX,
+                :midY => environmentValuesY + 60
+            }).update(dc);
+        } catch (ex) {}
     }
 
     // Called when this View is removed from the screen. Save the
