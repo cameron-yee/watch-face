@@ -12,7 +12,7 @@ class TempView {
 
     private var _locX as Lang.Number;
     private var _locY as Lang.Number;
-    private var _currentTemp as Lang.Number;
+    private var _currentTemp as Lang.Number or Null;
     private var _useCelcius as Lang.Boolean;
 
     function convertCelciusToFarenheit(celcius as Lang.Number) as Lang.Number {
@@ -32,7 +32,13 @@ class TempView {
     }
 
     function getCurrentTempF() as Lang.Number or Null {
-        return convertCelciusToFarenheit(getCurrentTempC());
+        var currentTempC = getCurrentTempC();
+
+        if (currentTempC != null) {
+            return convertCelciusToFarenheit(currentTempC);
+        }
+
+        return null;
     }
 
     function getCurrentTemp() as Lang.Number or Null {
